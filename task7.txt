@@ -1,0 +1,67 @@
+1.create view (view definition)
+
+1: Books with Category Name
+
+CREATE VIEW book_details AS
+SELECT 
+    b.book_id,
+    b.title,
+    b.author,
+    c.category_name
+FROM books b
+JOIN categories c ON b.category_id = c.category_id;
+
+2: Loan Information with Member and Book
+
+CREATE VIEW loan_summary AS
+SELECT 
+    l.loan_id,
+    m.name AS member_name,
+    b.title AS book_title,
+    l.loan_date,
+    l.due_date
+FROM loans l
+JOIN members m ON l.member_id = m.member_id
+JOIN books b ON l.book_id = b.book_id;
+
+3: Currently Borrowed Books
+
+CREATE VIEW borrowed_books AS
+SELECT 
+    l.loan_id,
+    b.title,
+    m.name AS borrower_name,
+    l.loan_date,
+    l.due_date
+FROM loans l
+JOIN books b ON l.book_id = b.book_id
+JOIN members m ON l.member_id = m.member_id
+WHERE CURDATE() <= l.due_date;
+
+4: Overdue Loans
+
+CREATE VIEW overdue_loans AS
+SELECT 
+    l.loan_id,
+    m.name,
+    b.title,
+    l.due_date
+FROM loans l
+JOIN members m ON l.member_id = m.member_id
+JOIN books b ON l.book_id = b.book_id
+WHERE CURDATE() > l.due_date;
+
+
+2.use_view (example usage)
+
+1. List all books with their categories
+SELECT * FROM book_details;
+
+2. Show full loan summary
+SELECT * FROM loan_summary;
+
+3. Show books currently borrowed (not overdue)
+SELECT * FROM borrowed_books;
+
+4. Show overdue loan records
+SELECT * FROM overdue_loans;
